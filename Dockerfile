@@ -21,7 +21,7 @@ RUN corepack enable \
 # cd 到 /nest-admin
 WORKDIR $PROJECT_DIR
 COPY ./ $PROJECT_DIR
-RUN chmod +x ./wait-for-it.sh 
+RUN chmod +x ./wait-for-it.sh && chmod +x ./docker-entrypoint.sh
 
 # set timezone
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
@@ -29,7 +29,7 @@ RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
 
 # see https://pnpm.io/docker
 FROM base AS prod-deps
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile 
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
 
 FROM base AS build
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
@@ -44,6 +44,10 @@ RUN pnpm run build
 FROM base
 COPY --from=prod-deps $PROJECT_DIR/node_modules $PROJECT_DIR/node_modules
 COPY --from=build $PROJECT_DIR/dist $PROJECT_DIR/dist
+COPY --from=base $PROJECT_DIR/deploy $PROJECT_DIR/deploy
+
+# Set environment variable for Docker
+ENV NODE_ENV=production
 
 # EXPOSE port
 EXPOSE $APP_PORT
@@ -51,4 +55,4 @@ EXPOSE $APP_PORT
 # 容器启动时执行的命令，类似npm run start
 # CMD ["pnpm", "start:prod"]
 # CMD ["pm2-runtime", "ecosystem.config.js"]
-ENTRYPOINT ./wait-for-it.sh $DB_HOST:$DB_PORT -- pnpm migration:run && pm2-runtime ecosystem.config.js
+ENTRYPOINT ["sh", "-c", "./wait-for-it.sh $DB_HOST:$DB_PORT -- ./docker-entrypoint.sh"]
