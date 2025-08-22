@@ -6,7 +6,6 @@ import { PassportModule } from '@nestjs/passport'
 import { TypeOrmModule } from '@nestjs/typeorm'
 
 import { ConfigKeyPaths, ISecurityConfig } from '~/config'
-import { isDev } from '~/global/env'
 
 import { LogModule } from '../system/log/log.module'
 import { MenuModule } from '../system/menu/menu.module'
@@ -49,7 +48,7 @@ const strategies = [LocalStrategy, JwtStrategy]
           signOptions: {
             expiresIn: `${jwtExprire}s`,
           },
-          ignoreExpiration: isDev,
+          ignoreExpiration: true,
         }
       },
       inject: [ConfigService],

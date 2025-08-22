@@ -1,6 +1,7 @@
-import { Module } from '@nestjs/common'
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 
+import { TestingLoggingMiddleware } from '~/shared/middleware/LoggingMiddleware'
 import { UserModule } from '../user/user.module'
 import { TestingController } from './testing.controller'
 import { TestingEntity } from './testing.entity'
@@ -16,4 +17,8 @@ const providers = [TestingService]
   providers: [...providers],
   exports: [TypeOrmModule, ...providers],
 })
-export class TestingModule {}
+export class TestingModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(TestingLoggingMiddleware).forRoutes(TestingController)
+  }
+}
