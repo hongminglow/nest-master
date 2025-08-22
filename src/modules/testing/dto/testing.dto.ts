@@ -34,3 +34,11 @@ export class CreateTestingDto {
 }
 
 export class UpdateTestingDto extends PartialType(CreateTestingDto) {}
+
+export class UpdateTestingStatusDto {
+  @ApiProperty({ description: '更新状态', example: '0 | 1' })
+  @Type(() => Number)
+  @IsInt()
+  @IsIn([0, 1])
+  status: number
+}

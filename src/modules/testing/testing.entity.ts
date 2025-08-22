@@ -16,9 +16,9 @@ export class TestingEntity extends CommonEntity {
   @Column({ nullable: true })
   email: string
 
-  @ManyToOne(() => UserEntity, user => user.phone)
-  @JoinColumn({ name: 'user_phone' })
-  phone: Relation<UserEntity>
+  @ManyToOne(() => UserEntity, user => user.id)
+  @JoinColumn({ name: 'user_id' })
+  user: Relation<UserEntity>
 
   @Column({ nullable: true, type: 'tinyint' })
   status: number

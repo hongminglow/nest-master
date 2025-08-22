@@ -1,7 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 
-import { TestingLoggingMiddleware } from '~/shared/middleware/LoggingMiddleware'
+import { TestingLoggingMiddleware } from '~/shared/middleware/logger-middleware'
 import { UserModule } from '../user/user.module'
 import { TestingController } from './testing.controller'
 import { TestingEntity } from './testing.entity'

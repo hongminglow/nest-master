@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Patch, Post, Put } from '@nestjs/common'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { IdParam } from '~/common/decorators/id-param.decorator'
-import { CreateTestingDto, UpdateTestingDto } from './dto/testing.dto'
+import { CreateTestingDto, UpdateTestingDto, UpdateTestingStatusDto } from './dto/testing.dto'
 import { TestingService } from './testing.service'
 
 @ApiTags('Testing - API 测试')
@@ -40,8 +40,8 @@ export class TestingController {
   @Patch(':id')
   @ApiOperation({ summary: '更新测试状态' })
   @ApiResponse({ status: '2XX', description: '更新成功' })
-  async updateStatus(@IdParam() id: number, status: number) {
-    return this.testingService.updateTestStatus(id, status)
+  async updateStatus(@IdParam() id: number, @Body() body: UpdateTestingStatusDto) {
+    return this.testingService.updateTestStatus(id, body.status)
   }
 
   @Delete(':id')
